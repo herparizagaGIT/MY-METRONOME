@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metronome App</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap&family=Dancing+Script&display=swap" rel="stylesheet">
+    <!-- PARA INSTALAR --> 
+    <link rel="manifest" href="manifest.json">
+    <meta name="google" content="notranslate">
+    <script>
+        if('serviceWorker' in navigator){
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+    <style> 
+
+        body{
+            background-color: lightgreen;
+        }
+
+        #CONTAINER {
+            background-color: white;
+            text-align: center;
+            width: 20%;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        label {
+            font-size: 3em;
+            font-family: 'Luckiest Guy', cursive;    
+        }
+
+        p {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        input[type="button"]{
+            background-image: url("img/PLAY_BUTTON.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border: 0;
+            cursor: pointer;
+        }
+        
+    </style>
+</head>
+<body>
+    <div id="CONTAINER">
+        <main>
+            <audio style="display:none" src="audio/BEAT.mp3" controls id="sound"></audio>
+            <label for="customRange1" class="form-label" id="BPM">60 BPM</label>
+            <br>
+            <p id="TEMPO">ADAGIO</p>
+            <input type="range" class="form-range" id="customRange1" min="40" max="208" value="60" onmousemove="sincronizarRango()" >
+            <br>
+            <input type="button" onclick="play_Or_Pause()" id="button">
+        </main>
+    </div>
+<script>
+
+function sincronizarRango() {
+    var rangeValue = document.getElementById("customRange1").value;
+    var labelText = document.getElementById("BPM"); 
+    var tempo = document.getElementById("TEMPO");
+    labelText.innerHTML = rangeValue + " BPM";
+    if(rangeValue < 60){
+        tempo.innerHTML = "LENTO"
+    }
+    else if(rangeValue < 76){
+        tempo.innerHTML = "ADAGIO"
+    }
+    else if(rangeValue < 110){
+        tempo.innerHTML = "ANDANTE"
+    }
+    else if(rangeValue < 168){
+        tempo.innerHTML = "ALLEGRO"
+    }
+    else if(rangeValue <= 200){
+        tempo.innerHTML = "PRESTO"
+    }
+    else if(rangeValue > 200){
+        tempo.innerHTML = "PRESTISSIMO"
+    }
+}
+
+let i = 0;
+
+function play_Or_Pause() {
+    if (i === 0){
+        play()
+    }
+    else{
+        stop()
+    }
+}
+
+let t;
+
+function play(){
+    let rangeNumber = Number(document.getElementById("customRange1").value);
+    t = setInterval(function(){ reproducirAudio() }, (60/rangeNumber) * 1000 );
+    document.getElementById("button").style.backgroundImage = 'url("img/STOP_BUTTON.png")';
+    document.getElementById("customRange1").setAttribute("onchange", "stop();play()");   
+    i = 1; 
+}
+
+function stop() {
+    clearInterval(t);
+    document.getElementById("button").style.backgroundImage = 'url("img/PLAY_BUTTON.png")';
+    document.getElementById("customRange1").setAttribute("onchange", "");
+    i = 0;
+}
+
+function reproducirAudio() {
+    document.getElementById("sound").play();
+}
+
+</script>   
+</body>
+</html>
